@@ -372,30 +372,41 @@ class TestCodeJailDarkLaunch(unittest.TestCase):
 
     @override_settings(CODEJAIL_DARKLAUNCH_EMSG_NORMALIZERS=[
         {
-            'search': r'/tmp/codejail-[0-9a-zA-Z]+',
-            'replace': r'/tmp/codejail-<RAND>',
-        },
-        {
             'search': r'[0-9]+',
             'replace': r'<NUM>',
         },
     ])
     def test_configurable_normalizers(self):
-        """We can override the normalizers, and they run in order."""
+        """We can augment the normalizers, and they run in order."""
         emsg_in = "Error in /tmp/codejail-1234abcd/whatever.py: something 12 34 other"
-        expect_out = "Error in /tmp/codejail-<RAND>/whatever.py: something <NUM> <NUM> other"
+        expect_out = "Error in /tmp/codejail-<SANDBOX_DIR_NAME>/whatever.py: something <NUM> <NUM> other"
+        assert expect_out == normalize_error_message(emsg_in)
+
+    @override_settings(
+        CODEJAIL_DARKLAUNCH_EMSG_NORMALIZERS=[
+            {
+                'search': r'[0-9]+',
+                'replace': r'<NUM>',
+            },
+        ],
+        CODEJAIL_DARKLAUNCH_EMSG_NORMALIZERS_COMBINE='replace',
+    )
+    def test_can_replace_normalizers(self):
+        """We can replace the normalizers."""
+        emsg_in = "Error in /tmp/codejail-1234abcd/whatever.py: something 12 34 other"
+        expect_out = "Error in /tmp/codejail-<NUM>abcd/whatever.py: something <NUM> <NUM> other"
         assert expect_out == normalize_error_message(emsg_in)
 
     @override_settings(CODEJAIL_DARKLAUNCH_EMSG_NORMALIZERS=[
         {
-            'search': r'broken [',
-            'replace': r'replace',
+            'search': r'broken',
+            'replace': r'replace \g<>',  # invalid replacement pattern
         },
     ])
     @patch('xmodule.capa.safe_exec.safe_exec.record_exception')
     def test_normalizers_validate(self, mock_record_exception):
-        """Normalizers are validated, and fall back to empty list on error."""
-        assert emsg_normalizers() == []  # pylint: disable=use-implicit-booleaness-not-comparison
+        """Normalizers are validated, and fall back to default list on error."""
+        assert len(emsg_normalizers()) > 0  # pylint: disable=use-implicit-booleaness-not-comparison
         mock_record_exception.assert_called_once()
 
 
