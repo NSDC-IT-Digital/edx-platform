@@ -542,7 +542,15 @@
             }
 
             function renderAnnotationAdder(v) {
-              const container = document.getElementById('annotationContainer');
+              let container = document.getElementById('annotationContainer');
+
+              if (!container) {
+                  container = document.createElement('div');
+                  container.id = 'annotationContainer';
+                  document.body.appendChild(container);
+              }
+
+
               const adderDiv = document.createElement('div');
               adderDiv.id = 'annotationAdderCustom';
               adderDiv.style.marginTop = '10px';
