@@ -538,7 +538,74 @@
             function onPause() {
                 this.videoPlayer.stopTimer();
                 this.el.trigger('pause', arguments);
+                renderAnnotationAdder(this);
             }
+
+            function renderAnnotationAdder(v) {
+              const container = document.getElementById('annotationContainer');
+              const adderDiv = document.createElement('div');
+              adderDiv.id = 'annotationAdderCustom';
+              adderDiv.style.marginTop = '10px';
+          
+              const textarea = document.createElement('textarea');
+              textarea.id = 'annotationText';
+              textarea.placeholder = 'Add a note...';
+              textarea.rows = 3;
+              textarea.style.width = '100%';
+          
+              const button = document.createElement('button');
+              button.innerText = 'Save';
+              button.onclick = () => {
+                  const noteText = textarea.value.trim();
+                  const timestamp = v.videoPlayer.currentTime;
+          
+                  if (!noteText) return;
+          
+                  const payload = {
+                      quote: `${formatTime(timestamp)}`,
+                      ranges: ["0"],
+                      text: noteText,
+                      tags: [],
+                      usage_id: v.videoEl.context.dataset.usageId,
+                      course_id: v.videoEl.context.dataset.courseId
+                  };
+          
+                  fetch("http://local.openedx.io/api/v1/add_video_notes", {
+                      method: "POST",
+                      body: JSON.stringify(payload),
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRFToken': getCSRFToken()
+                      }
+                  })
+                  .then(response => response.json())
+                  .then(() => {
+                      alert(`Note saved at ${formatTime(timestamp)}!`);
+                      textarea.value = "";
+                      adderDiv.style.display = "none";
+                  })
+                  .catch(error => {
+                      console.error("Error:", error);
+                      alert("Failed to save note.");
+                  });
+              };
+          
+              adderDiv.appendChild(textarea);
+              adderDiv.appendChild(button);
+              container.appendChild(adderDiv);
+          }
+          
+          function formatTime(seconds) {
+              const minutes = Math.floor(seconds / 60);
+              const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+              return `${minutes}:${secs}`;
+          }
+          
+          function getCSRFToken() {
+              const match = document.cookie.match(/csrftoken=([^;]+)/);
+              return match ? match[1] : '';
+          }
+
 
             function onPlay() {
                 this.videoPlayer.runTimer();
