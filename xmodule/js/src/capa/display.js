@@ -232,15 +232,15 @@
                 if (graded) {
                     progressTemplate = ngettext(
                         // Translators: {num_points} is the number of points possible (examples: 1, 3, 10).;
-                        '{num_points} point possible (graded, results hidden)',
-                        '{num_points} points possible (graded, results hidden)',
+                        '{num_points} mark',
+                        '{num_points} marks',
                         totalScore
                     );
                 } else {
                     progressTemplate = ngettext(
                         // Translators: {num_points} is the number of points possible (examples: 1, 3, 10).;
-                        '{num_points} point possible (ungraded, results hidden)',
-                        '{num_points} points possible (ungraded, results hidden)',
+                        '{num_points} mark',
+                        '{num_points} marks',
                         totalScore
                     );
                 }
@@ -250,13 +250,13 @@
                 if (graded) {
                     progressTemplate = ngettext(
                         // Translators: {num_points} is the number of points possible (examples: 1, 3, 10).;
-                        '{num_points} point possible (graded)', '{num_points} points possible (graded)',
+                        '{num_points} mark', '{num_points} marks',
                         totalScore
                     );
                 } else {
                     progressTemplate = ngettext(
                         // Translators: {num_points} is the number of points possible (examples: 1, 3, 10).;
-                        '{num_points} point possible (ungraded)', '{num_points} points possible (ungraded)',
+                        '{num_points} mark', '{num_points} marks',
                         totalScore
                     );
                 }
@@ -266,23 +266,23 @@
                     progressTemplate = ngettext(
                         // This comment needs to be on one line to be properly scraped for the translators.
                         // Translators: {earned} is the number of points earned. {possible} is the total number of points (examples: 0/1, 1/1, 2/3, 5/10). The total number of points will always be at least 1. We pluralize based on the total number of points (example: 0/1 point; 1/2 points);
-                        '{earned}/{possible} point (graded)', '{earned}/{possible} points (graded)',
+                        '{earned}/{possible} mark', '{earned}/{possible} marks',
                         totalScore
                     );
                 } else {
                     progressTemplate = ngettext(
                         // This comment needs to be on one line to be properly scraped for the translators.
                         // Translators: {earned} is the number of points earned. {possible} is the total number of points (examples: 0/1, 1/1, 2/3, 5/10). The total number of points will always be at least 1. We pluralize based on the total number of points (example: 0/1 point; 1/2 points);
-                        '{earned}/{possible} point (ungraded)', '{earned}/{possible} points (ungraded)',
+                        '{earned}/{possible} mark', '{earned}/{possible} marks',
                         totalScore
                     );
                 }
             }
             progress = edx.StringUtils.interpolate(
                 progressTemplate, {
-                    earned: curScore,
-                    num_points: totalScore,
-                    possible: totalScore
+                    earned: parseInt(curScore,10),
+                    num_points: parseInt(totalScore,10),
+                    possible: parseInt(totalScore,10)
                 }
             );
             return this.$('.problem-progress').text(progress);
