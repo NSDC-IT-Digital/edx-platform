@@ -545,6 +545,7 @@
               document.getElementById(`create-note-${v.id}`).style.display = 'block';
               button = document.getElementById(`save-note-${v.id}`)
               button.onclick = () => {
+                  textarea = document.getElementById(`video-notes-comment-${v.id}`)
                   const noteText = textarea.value.trim();
                   const timestamp = v.videoPlayer.currentTime;
 
@@ -559,23 +560,22 @@
                       course_id: v.videoEl.context.dataset.courseId
                   };
 
-                  fetch("http://local.openedx.io/api/v1/add_video_notes", {
+                  $.ajax({
+                      url: "/api/v1/add_video_notes",
                       method: "POST",
-                      body: JSON.stringify(payload),
+                      data: JSON.stringify(payload),
+                      contentType: "application/json",
                       headers: {
-                          'Content-Type': 'application/json',
                           'X-CSRFToken': getCSRFToken()
+                      },
+                      success: function(response) {
+                          $(`#video-notes-comment-${v.id}`).val("");
+                          $(`#create-note-${v.id}`).hide();
+                      },
+                      error: function(xhr, status, error) {
+                          console.error("Error:", error);
+                          alert("Failed to save note.");
                       }
-                  })
-                  .then(response => response.json())
-                  .then(() => {
-                      alert(`Note saved at ${formatTime(timestamp)}!`);
-                        $(`#video-notes-comment-${v.id}`).val("");
-                      $(`#create-note-${v.id}`).hide();
-                  })
-                  .catch(error => {
-                      console.error("Error:", error);
-                      alert("Failed to save note.");
                   });
               };
 
