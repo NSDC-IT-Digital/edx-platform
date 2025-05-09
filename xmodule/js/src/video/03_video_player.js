@@ -542,7 +542,7 @@
             }
 
             function renderAnnotationAdder(v) {
-              $(`#create-note-${v.id}`).show();
+              document.getElementById(`create-note-${v.id}`).style.display = 'block';
               button = document.getElementById(`save-note-${v.id}`)
               button.onclick = () => {
                   const noteText = textarea.value.trim();
