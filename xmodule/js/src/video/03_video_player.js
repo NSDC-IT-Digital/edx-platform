@@ -538,37 +538,18 @@
             function onPause() {
                 this.videoPlayer.stopTimer();
                 this.el.trigger('pause', arguments);
-                renderAnnotationAdder(this);
+                renderAnnotationAdder(v);
             }
 
             function renderAnnotationAdder(v) {
-              let container = document.getElementById('annotationContainer');
-
-              if (!container) {
-                  container = document.createElement('div');
-                  container.id = 'annotationContainer';
-                  document.body.appendChild(container);
-              }
-
-
-              const adderDiv = document.createElement('div');
-              adderDiv.id = 'annotationAdderCustom';
-              adderDiv.style.marginTop = '10px';
-          
-              const textarea = document.createElement('textarea');
-              textarea.id = 'annotationText';
-              textarea.placeholder = 'Add a note...';
-              textarea.rows = 3;
-              textarea.style.width = '100%';
-          
-              const button = document.createElement('button');
-              button.innerText = 'Save';
+              $(`#create-note-${v.id}`).show();
+              button = document.getElementById(`save-note-${v.id}`)
               button.onclick = () => {
                   const noteText = textarea.value.trim();
                   const timestamp = v.videoPlayer.currentTime;
-          
+
                   if (!noteText) return;
-          
+
                   const payload = {
                       quote: `${formatTime(timestamp)}`,
                       ranges: ["0"],
@@ -577,7 +558,7 @@
                       usage_id: v.videoEl.context.dataset.usageId,
                       course_id: v.videoEl.context.dataset.courseId
                   };
-          
+
                   fetch("http://local.openedx.io/api/v1/add_video_notes", {
                       method: "POST",
                       body: JSON.stringify(payload),
@@ -589,19 +570,17 @@
                   .then(response => response.json())
                   .then(() => {
                       alert(`Note saved at ${formatTime(timestamp)}!`);
-                      textarea.value = "";
-                      adderDiv.style.display = "none";
+                        $(`#video-notes-comment-${v.id}`).val("");
+                      $(`#create-note-${v.id}`).hide();
                   })
                   .catch(error => {
                       console.error("Error:", error);
                       alert("Failed to save note.");
                   });
               };
-          
-              adderDiv.appendChild(textarea);
-              adderDiv.appendChild(button);
-              container.appendChild(adderDiv);
+
           }
+
           
           function formatTime(seconds) {
               const minutes = Math.floor(seconds / 60);
