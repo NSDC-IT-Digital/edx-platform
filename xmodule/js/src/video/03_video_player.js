@@ -538,7 +538,7 @@
             function onPause() {
                 this.videoPlayer.stopTimer();
                 this.el.trigger('pause', arguments);
-                renderAnnotationAdder(v);
+                renderAnnotationAdder(this);
             }
 
             function renderAnnotationAdder(v) {
