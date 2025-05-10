@@ -570,7 +570,7 @@
                       },
                       success: function(response) {
                           data = JSON.parse(response)
-                          const ul = document.querySelector(`#notes-${id} ul`);
+                          const ul = document.querySelector(`#notes-${v.id} ul`);
                           const newNote = document.createElement('li');
                           newNote.innerHTML = `
                               <div class="time">${data.quote || ''}</div>
