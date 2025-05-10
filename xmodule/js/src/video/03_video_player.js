@@ -569,6 +569,20 @@
                           'X-CSRFToken': getCSRFToken()
                       },
                       success: function(response) {
+                          data = JSON.parse(response)
+                          const ul = document.querySelector(`#notes-${id} ul`);
+                          const newNote = document.createElement('li');
+                          newNote.innerHTML = `
+                              <div class="time">${data.quote || ''}</div>
+                              <div class="content">
+                                  <p>${data.text}</p>
+                              </div>
+                          `;
+                          if (ul.firstChild) {
+                              ul.insertBefore(newNote, ul.firstChild);
+                          } else {
+                              ul.appendChild(newNote);
+                          }
                           $(`#video-notes-comment-${v.id}`).val("");
                           $(`#create-note-${v.id}`).hide();
                       },
