@@ -570,7 +570,7 @@
                       },
                       success: function(response) {
                           data = JSON.parse(response)
-                          const ul = document.querySelector(`#notes-${v.id} ul`);
+                          let ul = document.querySelector(`#notes-${v.id} ul`);
                           if (!ul) {
                                 const notesListSection = document.querySelector(`#notes-${v.id} .notes-list-section`);
                                 if (!notesListSection) {
@@ -585,6 +585,7 @@
 
                                 ul = document.createElement('ul');
                                 moduleRow.appendChild(ul);
+                                moduleBlock.appendChild(moduleRow);
                                 notesListSection.appendChild(moduleBlock);
                           }
                           const newNote = document.createElement('li');
