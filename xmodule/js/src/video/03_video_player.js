@@ -571,6 +571,22 @@
                       success: function(response) {
                           data = JSON.parse(response)
                           const ul = document.querySelector(`#notes-${v.id} ul`);
+                          if (!ul) {
+                                const notesListSection = document.querySelector(`#notes-${v.id} .notes-list-section`);
+                                if (!notesListSection) {
+                                    console.error("Could not find .notes-list-section inside #notes-" + v.id);
+                                    return;
+                                }
+                                const moduleBlock = document.createElement('div');
+                                moduleBlock.className = 'module-block';
+
+                                const moduleRow = document.createElement('div');
+                                moduleRow.className = 'module-row';
+
+                                ul = document.createElement('ul');
+                                moduleRow.appendChild(ul);
+                                notesListSection.appendChild(moduleBlock);
+                          }
                           const newNote = document.createElement('li');
                           newNote.innerHTML = `
                               <div class="time">${data.quote || ''}</div>
@@ -594,6 +610,7 @@
               };
 
           }
+
 
           
           function formatTime(seconds) {
