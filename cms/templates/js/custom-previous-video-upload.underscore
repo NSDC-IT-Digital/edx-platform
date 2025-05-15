@@ -1,0 +1,33 @@
+<div class="video-row-container">
+    <% if (videoImageUploadEnabled) { %>
+    <div class="video-col thumbnail-col"></div>
+    <% } %>
+    <div class="video-col name-col"><%- client_video_id %></div>
+    <div class="video-col date-col"><%- created %></div>
+    <div class="video-col transcripts-col"></div>
+    <div class="video-col status-col"></div>
+
+    <div class="video-col link-col">
+        <p id="<%- edx_video_id %>" class="video-url-para">
+            <%- edx_video_url %>
+        </p>
+        <button id="video-copy-button" class="copy-button btn-outline-primary btn" type="button" disabled>
+            <span>
+                <span class="fa fa-files-o copy-icon" aria-hidden="true"></span>
+                <span lang="en">
+                    <span>Copy</span>
+                </span>
+            </span>
+        </button>
+    </div>
+    <div class="video-col actions-col">
+        <ul class="actions-list">
+            <li class="action-item action-remove">
+                <a href="#" data-tooltip="<%- gettext('Remove this video') %>" class="remove-video-button action-button">
+                    <span class="icon fa fa-times-circle" aria-hidden="true"></span>
+                    <span class="sr"><%- StringUtils.interpolate(gettext("Remove {video_name} video"), {video_name: client_video_id}) %></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
