@@ -1,6 +1,6 @@
 define([
-    'jquery', 'backbone', 'js/views/active_video_upload_list',
-    'js/views/previous_video_upload_list', 'js/views/active_video_upload'
+    'jquery', 'backbone', 'js/views/custom_active_video_upload_list',
+    'js/views/custom_previous_video_upload_list', 'js/views/active_video_upload'
 ], function($, Backbone, ActiveVideoUploadListView, PreviousVideoUploadListView, ActiveVideoUpload) {
     'use strict';
 

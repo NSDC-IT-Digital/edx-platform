@@ -88,6 +88,28 @@
                         gettext('Try using a different browser, such as Google Chrome.')
                     ].join('');
                     this.video.innerHTML = sourceList.join('') + errorMessage;
+                    var presigned_url = $('.video-player video source').attr('src');
+                    var mySubString = presigned_url.substring(
+                        presigned_url.indexOf("video/") + 6,
+                        presigned_url.lastIndexOf(".mp4")
+                    );
+                    var slug = mySubString;
+                    var dynamicHost = window.location.origin;
+                    console.log("dynamicHost :",dynamicHost)
+                    if (slug != null){
+                        var final_url = $.ajax({
+                            type: 'POST',
+                            url: dynamicHost + "/videos/presigned/",
+                            data: {"slug":slug, "presigned_url":presigned_url},
+                            global: false,
+                            async:false,
+                            success: function(data) {
+                                return data;
+                            }
+                        }).responseJSON;
+                        this.videoEl.find('source').attr('src',final_url);
+                    }
+
 
                     lastSource = this.videoEl.find('source').last();
                     lastSource.on('error', this.showErrorMessage.bind(this));
@@ -388,3 +410,45 @@
             return HTML5Video;
         });
 }(RequireJS.requirejs, RequireJS.require, RequireJS.define));
+
+
+$(document).on('click', '.action-save', function() {
+    var presigned_url = $(".wrapper-videolist-url input").val();
+
+    // Check if the URL contains "amazonaws.com" to determine if it's a presigned S3 URL
+    var isS3PresignedURL = presigned_url.includes('amazonaws.com');
+
+    if (isS3PresignedURL) {
+        // Parse slug from S3 presigned URL
+        var mySubString = presigned_url.substring(presigned_url.indexOf("video/") + 6, presigned_url.lastIndexOf(".mp4"));
+        var slug = mySubString;
+
+        // Fetch the final URL
+        var dynamicHost = window.location.origin;
+        console.log(dynamicHost + "/videos/presigned/")
+        if (slug != null) {
+            $.ajax({
+                url: dynamicHost + "/videos/presigned/",
+                type: 'post',
+                data: { "slug": slug },
+                success: function success(res) {
+                    setTimeout(function () {
+                        $('.video-player .video-error').remove();
+                        $('.video-player div.hidden').removeClass("hidden");
+                        $('.video-player video source').attr('src', res);
+                        $('.video-player video')[0].load();
+                    }, 500);
+                },
+
+                error: function error(response) {
+                    console.log("error.......", response);
+                }
+            });
+        }
+    } else {
+        // Handle non-S3 presigned URLs (e.g., other domains)
+        // You can implement your logic for non-S3 presigned URLs here
+        console.log('Non-S3 presigned URL:', presigned_url);
+    }
+
+});
