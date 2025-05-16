@@ -561,7 +561,7 @@
                   };
 
                   $.ajax({
-                      url: "/api/notes/v1/add_video_notes",
+                      url: "/api/notes/v1/video-notes",
                       method: "POST",
                       data: JSON.stringify(payload),
                       contentType: "application/json",
