@@ -599,6 +599,7 @@
                               ul.insertBefore(newNote, ul.firstChild);
                           } else {
                               ul.appendChild(newNote);
+                              $(`#notes-${v.id} .empty-section`).hide();
                           }
                           $(`#video-notes-comment-${v.id}`).val("");
                           $(`#create-note-${v.id}`).hide();
